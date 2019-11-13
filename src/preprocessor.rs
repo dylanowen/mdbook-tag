@@ -49,12 +49,11 @@ impl Preprocessor for TagPreprocessor {
                 let mut tags_map: HashMap<String, Vec<Tag>> = HashMap::new();
 
                 // collect all of our tags
-                for tag in raw_tags.into_iter().flat_map(|e| e) {
+                for tag in raw_tags.into_iter().flatten() {
                     match tags_map.get_mut(&tag.alias) {
                         Some(existing_tags) => existing_tags.push(tag.tag),
                         None => {
                             tags_map.insert(tag.alias, vec![tag.tag]);
-                            ()
                         }
                     }
                 }
@@ -204,7 +203,7 @@ impl Tagger {
                 );
 
                 contents.push(md::Event::Start(link.clone()));
-                contents.push(md::Event::Text(format!("{}", chapter_name).into()));
+                contents.push(md::Event::Text(chapter_name.into()));
                 contents.push(md::Event::End(link.clone()));
                 contents.push(md::Event::Text("\n\n".into()));
             }

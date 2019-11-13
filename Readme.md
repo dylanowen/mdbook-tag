@@ -9,8 +9,6 @@
 cargo install mdbook-tag
 ```
 
-## Usage
-
 `book.toml`
 ```toml
 [preprocessor.tag]
@@ -18,6 +16,8 @@ command = "mdbook-tag"
 # Optional key to customize the output filename (defaults to tags.md)
 filename = "customtagsfile.md"
 ```
+
+## Usage
 
 #### Input
 
