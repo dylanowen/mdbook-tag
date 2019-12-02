@@ -3,6 +3,8 @@ use mdbook::errors::Error;
 use mdbook::errors::ErrorKind;
 use mdbook::errors::Result;
 use mdbook::preprocess::{Preprocessor, PreprocessorContext};
+use mdbook::utils::fs::path_to_root;
+use mdbook::utils::new_cmark_parser;
 use mdbook::BookItem;
 use pulldown_cmark as md;
 use pulldown_cmark_to_cmark::fmt::cmark;
@@ -96,7 +98,7 @@ impl Tagger {
         let mut buf = String::with_capacity(chapter.content.len());
         let mut tags = vec![];
 
-        let events = md::Parser::new(&chapter.content).flat_map(|e| match e {
+        let events = new_cmark_parser(&chapter.content).flat_map(|e| match e {
             md::Event::Code(ref raw_code) => {
                 let code = raw_code.trim();
 
@@ -115,7 +117,13 @@ impl Tagger {
                     let hash = format!("#{}", alias);
                     let link = md::Tag::Link(
                         md::LinkType::Inline,
-                        format!("/{}{}", self.output_filename, hash).into(),
+                        format!(
+                            "{}{}{}",
+                            path_to_root(&chapter.path),
+                            self.output_filename,
+                            hash
+                        )
+                        .into(),
                         format!("Tag: {}", alias).into(),
                     );
 
@@ -266,7 +274,7 @@ mod test {
 
         static EXPECTED: &str = r#"# Chapter
 
-[`#hello`](/tags.md#hello "Tag: hello")"#;
+[`#hello`](tags.md#hello "Tag: hello")"#;
 
         #[test]
         fn simple_chapter() {
@@ -295,7 +303,13 @@ mod test {
                 vec![],
             );
 
-            verify_process_chapter(vec!["hello"], chapter, EXPECTED);
+            verify_process_chapter(
+                vec!["hello"],
+                chapter,
+                r#"# Chapter
+
+[`#hello`](../tags.md#hello "Tag: hello")"#,
+            );
         }
 
         #[test]
@@ -335,7 +349,6 @@ mod test {
 
     mod build_tags_page {
         use super::*;
-        use std::str::FromStr;
         use toml::map::Map;
 
         #[test]

@@ -28,9 +28,9 @@ filename = "customtagsfile.md"
 #### Output
 
 ~~~markdown
-[`#one-tag`](/tags.md#one-tag "Tag: one-tag") [`#two-tag`](/tags.md#two-tag "Tag: two-tag")
+[`#one-tag`](tags.md#one-tag "Tag: one-tag") [`#two-tag`](tags.md#two-tag "Tag: two-tag")
 ~~~
 
 #### Rendered
 
-[`#one-tag`](/tags.md#one-tag "Tag: one-tag") [`#two-tag`](/tags.md#two-tag "Tag: two-tag")
+[`#one-tag`](tags.md#one-tag "Tag: one-tag") [`#two-tag`](tags.md#two-tag "Tag: two-tag")
